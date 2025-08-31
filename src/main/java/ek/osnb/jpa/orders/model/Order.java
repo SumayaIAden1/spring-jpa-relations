@@ -2,6 +2,7 @@ package ek.osnb.jpa.orders.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import ek.osnb.jpa.common.model.BaseEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -15,7 +16,12 @@ import java.util.List;
 public class Order extends BaseEntity
 {
     @JsonManagedReference
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    // Order not updated because CascadeType.PERSIST only works for new entities.
+    // Add CascadeType.MERGE to enable cascading updates.
+    // Order not deleted because CascadeType.PERSIST does not handle removals.
+    // Add CascadeType.REMOVE to enable cascading deletes.
+
     private List<OrderLine> orderLines = new ArrayList<>();
 
     //Note: The mappedBy attribute indicates that the Order entity is not the owner of the relationship.
