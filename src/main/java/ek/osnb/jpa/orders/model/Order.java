@@ -15,7 +15,8 @@ import java.util.List;
 @Table(name = "orders")
 public class Order extends BaseEntity
 {
-    @JsonManagedReference
+    //@JsonManagedReference - Entities er ikke længere eksponeret, så @JsonManagedReference
+    // og @JsonBackReference kan fjernes fra Order og OrderLine
     @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     // Order not updated because CascadeType.PERSIST only works for new entities.
     // Add CascadeType.MERGE to enable cascading updates.

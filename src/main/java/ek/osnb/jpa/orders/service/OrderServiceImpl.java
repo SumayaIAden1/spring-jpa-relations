@@ -1,60 +1,67 @@
 package ek.osnb.jpa.orders.service;
 
+import ek.osnb.jpa.orders.DTO.OrderDto;
+import ek.osnb.jpa.orders.DTO.OrderMapper;
 import ek.osnb.jpa.orders.model.Order;
 import ek.osnb.jpa.orders.model.OrderStatus;
 import ek.osnb.jpa.orders.repository.OrderLineRepository;
 import ek.osnb.jpa.orders.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class OrderServiceImpl implements OrderService
-{
+public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderLineRepository orderLineRepository;
 
-    public OrderServiceImpl(OrderRepository orderRepository, OrderLineRepository orderLineRepository)
-    {
+    public OrderServiceImpl(OrderRepository orderRepository, OrderLineRepository orderLineRepository) {
         this.orderRepository = orderRepository;
         this.orderLineRepository = orderLineRepository;
     }
 
     @Override
-    public List<Order> getAllOrders(OrderStatus status) {
-        return orderRepository.findAll();
+    public List<OrderDto> getAllOrders(OrderStatus status) {
+        List<Order> orders = orderRepository.findAll();
+        List<OrderDto> orderDtos = new ArrayList<>();
+        for (var order : orders) {
+            orderDtos.add(OrderMapper.toDto(order));
+        }
+        return orderDtos;
     }
 
     @Override
-    public Order getOrderById(Long id) {
+    public OrderDto getOrderById(Long id) {
         Optional<Order> order = orderRepository.findById(id);
         if (order.isPresent()) {
-            return order.get();
+            return OrderMapper.toDto(order.get());
         }
         throw new RuntimeException("Order not found with id: " + id);
     }
 
     @Override
-    public Order createOrder(Order order) {
+    public OrderDto createOrder(OrderDto orderDto) {
+        Order order = OrderMapper.toEntity(orderDto);
         order.setId(null); // Ensure the ID is null for new entities
-        return orderRepository.save(order);
+        return OrderMapper.toDto(orderRepository.save(order));
     }
 
     @Override
-    public Order updateOrder(Long id, Order order) {
+    public OrderDto updateOrder(Long id, OrderDto orderDto) {
         Optional<Order> existingOrder = orderRepository.findById(id);
         if (existingOrder.isPresent()) {
+            Order order = OrderMapper.toEntity(orderDto);
             Order updatedOrder = existingOrder.get();
             updatedOrder.setOrderDate(order.getOrderDate());
             updatedOrder.setStatus(order.getStatus());
-
             updatedOrder.clearOrderLines();
             for (var line : order.getOrderLines()) {
                 updatedOrder.addOrderLine(line);
             }
-            return orderRepository.save(updatedOrder);
+            return OrderMapper.toDto(orderRepository.save(updatedOrder));
         }
         throw new RuntimeException("Order not found with id: " + id);
     }
@@ -67,5 +74,4 @@ public class OrderServiceImpl implements OrderService
             throw new RuntimeException("Order not found with id: " + id);
         }
     }
-
 }

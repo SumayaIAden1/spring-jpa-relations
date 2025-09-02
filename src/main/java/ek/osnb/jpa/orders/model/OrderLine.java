@@ -13,7 +13,8 @@ public class OrderLine extends BaseEntity {
     private double unitPrice;
     private int quantity;
 
-    @JsonBackReference
+    //@JsonBackReference - Entities er ikke længere eksponeret, så @JsonManagedReference og
+    // @JsonBackReference kan fjernes fra Order og OrderLine
     @ManyToOne
     private Order order;
 
