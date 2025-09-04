@@ -16,5 +16,4 @@ public interface OrderService {
     void deleteOrder(Long id);
     void addOrderLine(Long orderId, OrderLineDto orderLineDto);
     void removeOrderLine(Long orderId, Long orderLineId);
-
 }

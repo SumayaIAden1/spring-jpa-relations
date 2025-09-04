@@ -1,6 +1,7 @@
 package ek.osnb.jpa.orders.service;
 
 import ek.osnb.jpa.orders.DTO.OrderDto;
+import ek.osnb.jpa.orders.DTO.OrderLineDto;
 import ek.osnb.jpa.orders.DTO.OrderMapper;
 import ek.osnb.jpa.orders.model.Order;
 import ek.osnb.jpa.orders.model.OrderLine;
@@ -13,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+//toDto(...) metoderne bruges til at lave read-only dataobjekter (DTO’er) fra entities.
+//toEntity(...) metoderne bruges til at lave entities (fx til database-lagring) ud fra DTO’er.
 @Service
 public class OrderServiceImpl implements OrderService {
 
